@@ -40,6 +40,10 @@ function StereoAudioRecorder(mediaStream, config) {
     var recordingLength = 0;
     var jsAudioNode;
 
+    var instant = 0.0;
+    var slow = 0.0;
+    var clip = 0.0;
+
     var numberOfAudioChannels = 2;
 
     /**
@@ -558,6 +562,10 @@ function StereoAudioRecorder(mediaStream, config) {
         self.sampleRate = sampleRate;
         self.recordingLength = recordingLength;
 
+        self.instant = 0.0;
+        self.slow = 0.0;
+        self.clip = 0.0;
+
         intervalsBasedBuffers = {
             left: [],
             right: [],
@@ -633,6 +641,28 @@ function StereoAudioRecorder(mediaStream, config) {
         var chLeft = new Float32Array(left);
         leftchannel.push(chLeft);
 
+        ///////////////////////////////
+
+
+
+        var i;
+        var sum = 0.0;
+        var clipcount = 0;
+
+        for (i = 0; i < left.length; ++i) {
+            sum += left[i] * left[i];
+            if (Math.abs(left[i]) > 0.99) {
+                clipcount += 1;
+            }
+        }
+
+        self.instant = Math.sqrt(sum / left.length);
+        self.slow = 0.95 * self.slow + 0.05 * self.instant;
+        self.clip = clipcount / left.length;
+
+
+        //////////////////////////////
+
         if (numberOfAudioChannels === 2) {
             var right = e.inputBuffer.getChannelData(1);
             var chRight = new Float32Array(right);
@@ -696,7 +726,7 @@ function StereoAudioRecorder(mediaStream, config) {
                 var blob = new Blob([view], {
                     type: 'audio/wav'
                 });
-                config.ondataavailable(blob);
+                config.ondataavailable(blob, self);
 
                 setTimeout(looper, config.timeSlice);
             });
