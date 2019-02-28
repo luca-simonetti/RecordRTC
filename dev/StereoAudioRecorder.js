@@ -405,7 +405,7 @@ function StereoAudioRecorder(mediaStream, config) {
     };
 
     if (typeof Storage === 'undefined') {
-        var Storage = {
+        Storage = {
             AudioContextConstructor: null,
             AudioContext: window.AudioContext || window.webkitAudioContext
         };

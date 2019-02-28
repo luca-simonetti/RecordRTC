@@ -1,6 +1,6 @@
 'use strict';
 
-// Last time updated: 2018-12-14 9:07:01 AM UTC
+// Last time updated: 2019-02-28 3:05:33 PM UTC
 
 // ________________
 // RecordRTC v5.4.9
@@ -2843,7 +2843,7 @@ function StereoAudioRecorder(mediaStream, config) {
     };
 
     if (typeof Storage === 'undefined') {
-        var Storage = {
+        Storage = {
             AudioContextConstructor: null,
             AudioContext: window.AudioContext || window.webkitAudioContext
         };
