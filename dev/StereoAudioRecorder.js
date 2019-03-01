@@ -553,7 +553,7 @@ function StereoAudioRecorder(mediaStream, config) {
         isAudioProcessStarted = false;
         recording = false;
         isPaused = false;
-        context = null;
+        // context = null;
 
         self.leftchannel = leftchannel;
         self.rightchannel = rightchannel;
@@ -574,13 +574,13 @@ function StereoAudioRecorder(mediaStream, config) {
     }
 
     function clearRecordedDataCB() {
-        if (jsAudioNode) {
+        if (jsAudioNode && !isSafari) {
             jsAudioNode.onaudioprocess = null;
             jsAudioNode.disconnect();
             jsAudioNode = null;
         }
 
-        if (audioInput) {
+        if (audioInput && !isSafari) {
             audioInput.disconnect();
             audioInput = null;
         }
@@ -609,9 +609,9 @@ function StereoAudioRecorder(mediaStream, config) {
             recording = false;
         }
 
-        if (!recording) {
+        if (!recording && !isSafari) {
             if (audioInput) {
-                audioInput.disconnect();
+                audioInput.disconnect(jsAudioNode);
                 audioInput = null;
             }
             return;
